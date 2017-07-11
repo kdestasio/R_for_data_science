@@ -1,0 +1,40 @@
+---
+title: "Working Through H. Wickhams’s “R for Data Science""
+author: "Krista DeStasio"
+date: "7/11/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+rm(list=ls()) # Clear the workspace
+setwd("~/Dropbox/R_projects/practice/") # Set the working directory
+
+## Install and load required packages
+list.of.packages <- c("tidyverse")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])] 
+if(length(new.packages)) install.packages(new.packages) 
+lapply(list.of.packages, library, character.only = TRUE)
+
+# Set the knit options: save figures to a folder, don't echo code chunks, don't print warnings, don't print messages.
+knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='Figs/', echo=FALSE, warning=FALSE, message=FALSE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
