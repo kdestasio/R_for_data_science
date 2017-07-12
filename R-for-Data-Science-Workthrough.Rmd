@@ -13,10 +13,13 @@ output:
 ---
 
 # A Brief Introduction to This File
-This R file walks through G. Grolemund & H. Wickhams’s online text, ["R for Data Science."](http://r4ds.had.co.nz/index.html) The code is commented so that the beginning R programmer can read through and understand what each line of code does and compare it to their own as they work through the text. Of course, there is more than one way to write code. This is only one sample way among many, and surely not the _most_ elegant.  
+This R file walks through G. Grolemund & H. Wickhams’s online text, ["R for Data Science."](http://r4ds.had.co.nz/index.html) The code is commented so that the beginning R programmer can read through and understand what each line of code does and compare it to their own as they work through the text. Of course, there is more than one way to write code. This is only one sample way among many, and surely not the _most_ elegant. **For the greatest learning benefit, I suggest you attempt each exercise on your own before looking at the code or write-ups provided here.**   
 
-For those new to R and RStudio, it may be of additional benefit to knit the document and examine how the code in the Rmd file is visually expressed in the resultant knitted document. For example, see how the ` ["R for Data Science."](http://r4ds.had.co.nz/index.html)` is expressed as a hyperlink in the preceeding paragraph where it was not surrounded by tick-marks and compare that to how the same text is expressed in this paragraph when surrounded by ticks.   
+For those new to R and RStudio, it may be of additional benefit to knit the document and examine how the code in the Rmd file is visually expressed in the resultant knitted document. For example, see how the ` ["R for Data Science."](http://r4ds.had.co.nz/index.html)` is expressed as a hyperlink in the preceeding paragraph where it was not surrounded by tick-marks and compare that to how the same text is expressed in this paragraph when surrounded by ticks. See also the difference in appearance when knitting to different document types (HTML, PDF, Word).  
 
+**Tip**: *If you are using RStudio, click the text next to the orange # box at the bottom of the editor window to easily navigate the code chunks.*  
+
+**Tip**: *Use the `?` before any command to view the documentation on that function. Do this often. For example, type `?setwd` to see a description, usage, arguments, and more for the function `setwd()`.* 
 ```{r Setup, include=FALSE}
 rm(list=ls()) # Clear the workspace
 setwd("~/Dropbox/R_projects/R_practice/") # Set the working directory
@@ -32,6 +35,8 @@ knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='Figs/', echo=TRUE, w
 
 # Begin Work-through
 ## Chapter 3, Data Visualisation
+To really understand ggplot2, I highly recommend reading [“The Layered Grammar of Graphics”](http://vita.had.co.nz/papers/layered-grammar.pdf) as suggested at the beginning of Chapter 3. 
+
 ### The `mpg` data frame
 
 ```{r Examine the mpg data frame}
@@ -64,7 +69,19 @@ ggplot(data = mpg)
 2. Based on the output from `str(mpg)`, we see that there are 234 rows and 11 columns in the mpg data frame.  
 ```{r Exercises 2}
 # Alternative means of finding number of rows and columns
-nrow(mpg)
+nrow(mpg) # Pring the number of rows 
 ncol(mpg)
 ```
 There are `r nrow(mpg)` rows and `r ncol(mpg)` columns in the mpg data frame.   
+
+3. The `drv` variable describes whether the vehicle is front, rear, or 4-wheel drive.  
+```{r Exercises 3}
+?mpg
+```
+
+4. The plot is not useful because the variables are categorical and multiple points are plotted atop one another. We are unable to determine from this plot how many observations there are of each class-drive combination.  
+```{r Exercises 4}
+ggplot(data=mpg) +
+    geom_point(mapping = aes(x=class, y=drv))
+```
+
