@@ -1,5 +1,5 @@
 ---
-title: "Working Through H. Wickham’s ggpllot2"
+title: "Working Through H. Wickham’s ggplot2"
 author: 'Krista DeStasio'
 date: "4/25/2017"
 output: html_document

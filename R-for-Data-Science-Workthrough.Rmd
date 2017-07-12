@@ -1,40 +1,36 @@
 ---
-title: "Working Through H. Wickhams’s “R for Data Science""
+title: "Working Through G. Grolemund & H. Wickhams’s [R for Data Science](http://r4ds.had.co.nz/index.html)"
 author: "Krista DeStasio"
 date: "7/11/2017"
-output: html_document
+output:
+  html_document:
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
 ---
+
+This R file walks through G. Grolemund & H. Wickhams’s online text, ["R for Data Science."](http://r4ds.had.co.nz/index.html) The code is commented so that the beginning R programmer can read through and understand what each line of code does and compare it to their own as they work through the text. Of course, there is more than one way to write code. This is only one sample way among many, and surely not the _most_ elegant.  
 
 ```{r setup, include=FALSE}
 rm(list=ls()) # Clear the workspace
-setwd("~/Dropbox/R_projects/practice/") # Set the working directory
+setwd("~/Dropbox/R_projects/R_practice/") # Set the working directory
 
 ## Install and load required packages
-list.of.packages <- c("tidyverse")
-new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])] 
+list.of.packages <- c("tidyverse", "knitr") # Make a character vector of packages used in the script
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])] # Which packages are not already installed
 if(length(new.packages)) install.packages(new.packages) 
-lapply(list.of.packages, library, character.only = TRUE)
+lapply(list.of.packages, library, character.only = TRUE) # If the list of packages we want and the list of new packages is not of the same length, install the packages listed in new.packages
 
-# Set the knit options: save figures to a folder, don't echo code chunks, don't print warnings, don't print messages.
-knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='Figs/', echo=FALSE, warning=FALSE, message=FALSE)
+knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='Figs/', echo=TRUE, warning=FALSE, message=FALSE) # Set the knit options: save figures to a folder, echo code chunks in the knitted document, don't print warnings in the knitted doc, don't print messages in the knitted doc.
 ```
 
-## R Markdown
+# Chapter 3
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+Hypothesis: There is a negative linear relationship between engine size and fuel efficiency, such that as engine size increases fuel efficiency decreases.  
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+```{r Data visualization}
+ggplot(data=mpg) + # specify data frame 
+    geom_point(mapping = aes(x = displ, y = hwy)) # specify that plot is a scatterplot with displ on the x axis and hwy on the y axis
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+The plot confirms the hypothesis that there is a negative relationship between engine size and fuel efficiency.  
