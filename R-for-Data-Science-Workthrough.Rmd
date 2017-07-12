@@ -3,15 +3,21 @@ title: "Working Through G. Grolemund & H. Wickhams’s [R for Data Science](http
 author: "Krista DeStasio"
 date: "7/11/2017"
 output:
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
   html_document:
     toc: yes
     toc_depth: 3
     toc_float: yes
 ---
 
+# A Brief Introduction to This File
 This R file walks through G. Grolemund & H. Wickhams’s online text, ["R for Data Science."](http://r4ds.had.co.nz/index.html) The code is commented so that the beginning R programmer can read through and understand what each line of code does and compare it to their own as they work through the text. Of course, there is more than one way to write code. This is only one sample way among many, and surely not the _most_ elegant.  
 
-```{r setup, include=FALSE}
+For those new to R and RStudio, it may be of additional benefit to knit the document and examine how the code in the Rmd file is visually expressed in the resultant knitted document. For example, see how the ` ["R for Data Science."](http://r4ds.had.co.nz/index.html)` is expressed as a hyperlink in the preceeding paragraph where it was not surrounded by tick-marks and compare that to how the same text is expressed in this paragraph when surrounded by ticks.   
+
+```{r Setup, include=FALSE}
 rm(list=ls()) # Clear the workspace
 setwd("~/Dropbox/R_projects/R_practice/") # Set the working directory
 
@@ -24,13 +30,41 @@ lapply(list.of.packages, library, character.only = TRUE) # If the list of packag
 knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='Figs/', echo=TRUE, warning=FALSE, message=FALSE) # Set the knit options: save figures to a folder, echo code chunks in the knitted document, don't print warnings in the knitted doc, don't print messages in the knitted doc.
 ```
 
-# Chapter 3
+# Begin Work-through
+## Chapter 3, Data Visualisation
+### The `mpg` data frame
+
+```{r Examine the mpg data frame}
+str(mpg) # Look at the structure of the mpg data frame
+mpg # Look at the first 10 rows of the mpg data frame
+```
 
 Hypothesis: There is a negative linear relationship between engine size and fuel efficiency, such that as engine size increases fuel efficiency decreases.  
 
-```{r Data visualization}
+```{r Creating the ggplot}
 ggplot(data=mpg) + # specify data frame 
     geom_point(mapping = aes(x = displ, y = hwy)) # specify that plot is a scatterplot with displ on the x axis and hwy on the y axis
 ```
 
 The plot confirms the hypothesis that there is a negative relationship between engine size and fuel efficiency.  
+
+### Template for making graphs with ggplot2
+```{r Template, eval=FALSE}
+ggplot(data = <DATA>) + 
+  <GEOM_FUNCTION>(mapping = aes(<MAPPINGS>))
+```
+
+### Exercises
+
+1. There are no visible results from the code below.  
+```{r Exercises 1}
+ggplot(data = mpg)
+```
+
+2. Based on the output from `str(mpg)`, we see that there are 234 rows and 11 columns in the mpg data frame.  
+```{r Exercises 2}
+# Alternative means of finding number of rows and columns
+nrow(mpg)
+ncol(mpg)
+```
+There are `r nrow(mpg)` rows and `r ncol(mpg)` columns in the mpg data frame.   
