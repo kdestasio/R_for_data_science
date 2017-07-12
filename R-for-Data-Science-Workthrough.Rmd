@@ -188,7 +188,7 @@ ggplot(mpg, aes(displ, hwy)) +
   geom_point(shape = 21, colour = "darkgreen", fill = "gold", size = 5, stroke = 5)
 ```
 
-6. Setting the color aesthetic to `displ < 5` will assign one color to all x-axis (hwy) values < 5 and a different color to x-axis values ≤ 5. Since the color palette is not specified, default colors are used.  
+6. Setting the color aesthetic to `displ < 5` will assign one color to all x-axis (hwy) values < 5 and a different color to x-axis values $\ge$ 5. Since the color palette is not specified, default colors are used.  
 ```{r Exercises 3.3.1 6}
 ggplot(data=mpg) +
     geom_point(mapping = aes(x = displ, y = hwy, color = displ < 5))
