@@ -5,10 +5,10 @@ date: "7/11/2017"
 output:
   pdf_document:
     toc: yes
-    toc_depth: '3'
+    toc_depth: '4'
   html_document:
     toc: yes
-    toc_depth: 3
+    toc_depth: 4
     toc_float: yes
 ---
 
@@ -53,13 +53,15 @@ ggplot(data=mpg) + # specify data frame
 
 The plot confirms the hypothesis that there is a negative relationship between engine size and fuel efficiency.  
 
-### Template for making graphs with ggplot2
+### Making graphs with ggplot2
+
+**Template:**
 ```{r Template, eval=FALSE}
 ggplot(data = <DATA>) + 
   <GEOM_FUNCTION>(mapping = aes(<MAPPINGS>))
 ```
 
-### Exercises 3.2.4
+#### Exercises 3.2.4
 
 1. There are no visible results from the code below.  
 ```{r Exercises 3.2.4 1}
@@ -115,7 +117,7 @@ Aesthetic shapes:
 
 ![](http://r4ds.had.co.nz/visualize_files/figure-html/shapes-1.png)
 
-### Exercises 3.3.1
+#### Exercises 3.3.1
 
 1. The points are not blue because the color aesthetic is set inside `aes()`.
 ```{r Exercises 3.3.1 1}
@@ -193,3 +195,91 @@ ggplot(mpg, aes(displ, hwy)) +
 ggplot(data=mpg) +
     geom_point(mapping = aes(x = displ, y = hwy, color = displ < 5))
 ```
+
+### Facets
+```{r Facet on a single variable}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+  facet_wrap(~ class, nrow = 2) # This will create a separate plot for each class of vehicle and will fit the plots into 2 rows
+```
+
+```{r Facet on two variables}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+  facet_grid(drv ~ cyl) # This will create a grid of plots with one plot for each combination of drv and cyl
+```
+
+```{r Facet in one dimension}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+    facet_grid(. ~ cyl) # Use the . to create plots for each level of cylinder (cyl) in the columns dimension. To facet in the rows dimension, use `facet_grid(cyl ~ .)`
+```
+
+#### Exercises 3.5.1
+
+1. If faceting is done with a continuous variable, a plot is created for each value for which there is at least one observation.
+```{r Exercises 3.5.1 1}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+  facet_wrap(~ hwy, nrow = 2) 
+```
+
+2. The empty cells in the plot with `facet_grid(drv ~ cyl)` indicate that there are no cars with at the intersection of that number of cylinders and that type of drive (e.g. no cars with 5 cylinders and 4-wheel drive). The absence of vehicles corresponding to specific cylinde  r-drive combinations is also evident in the second plot. Those intersections in the second plot without a point correspond to the empty cells in the first plot (see again cars with 5 cylinders on the y-axis and 4-wheel drive on the x-axis).
+
+```{r Exercises 3.5.1 2}
+# First plot, with drive and cylinder are faceted
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+  facet_grid(drv ~ cyl)
+
+# Second plot, with drive and cylinder represented on the axes of a single plot
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = drv, y = cyl))
+```
+
+3. The first plot shows highway miles per gallon and engine displacement faceted by drive type. The `.` in the second position specifies that drive type should be displayed in rows. The second plot shows highway miles per gallon and engine displacement faceted by number of cylinders. The `.` in the first position specifies that number of cylinders should be displayed in columns.  
+```{r Exercises 3.5.1 3}
+# Plot of highway mpg and engine displacement faceted by drive type
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) +
+  facet_grid(drv ~ .)
+
+# The above is the same as the following except that the drive labels shift from right to top aligned. Uncomment and run the code to see the difference.
+#ggplot(data = mpg) + 
+#  geom_point(mapping = aes(x = displ, y = hwy)) +
+#  facet_wrap(~ drv, nrow = 3) 
+
+# Plot of highway mpg and engine displacement faceted by number of cylinders
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) +
+  facet_grid(. ~ cyl)
+
+# The above is the same as the following. Uncomment and run the code to see. 
+#ggplot(data = mpg) + 
+#    geom_point(mapping = aes(x = displ, y = hwy)) +
+#    facet_wrap(~ cyl, nrow = 1) 
+```
+
+4. The advantage of using faceting rather than the color aesthetic is that with separate plots it is easier to see the shape and spread of the data points for each level of the variable. A disadvantage is that it's difficult to see the overall shape and spread of the observations across levels of the faceted variable. While using the color aesthetic works well with the mpg dataset, with a larger dataset, the likelihood of overlapping data points increases and with enough overlapping observations jittering may be insufficient. It may therefore be preferable to use faceting with large datasets.  
+```{r Exercises 3.5.1 4}
+# Plot with facets
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+  facet_wrap(~ class, nrow = 2)
+
+# Plot with color aesthetic
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color = class))
+```
+
+5. 
+
+`nrow` - specifies the number of rows into which the faceted plots are fitted.  
+`ncol` - specifies the number of columns into which the faceted plots are fitted.  
+`facet_grid()` does not have `nrow` or `ncol` arguments because the number of rows and columns is determined by the number of levels of the row and column facetting variables.  
+```{r Exercises 3.5.1 5}
+?facet_wrap
+```
+
+6. One should put the variable with more unique levels in the columns so the plots can extend vertically where there is more space. The horizontal space is limited by the page width and adding more plots compresses them, making them difficult to read.  
+
