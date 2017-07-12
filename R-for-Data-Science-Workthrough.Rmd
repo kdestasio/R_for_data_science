@@ -59,15 +59,15 @@ ggplot(data = <DATA>) +
   <GEOM_FUNCTION>(mapping = aes(<MAPPINGS>))
 ```
 
-### Exercises
+### Exercises 3.2.4
 
 1. There are no visible results from the code below.  
-```{r Exercises 1}
+```{r Exercises 3.2.4 1}
 ggplot(data = mpg)
 ```
 
 2. Based on the output from `str(mpg)`, we see that there are 234 rows and 11 columns in the mpg data frame.  
-```{r Exercises 2}
+```{r Exercises 3.2.4 2}
 # Alternative means of finding number of rows and columns
 nrow(mpg) # Pring the number of rows 
 ncol(mpg)
@@ -75,12 +75,12 @@ ncol(mpg)
 There are `r nrow(mpg)` rows and `r ncol(mpg)` columns in the mpg data frame.   
 
 3. The `drv` variable describes whether the vehicle is front, rear, or 4-wheel drive.  
-```{r Exercises 3}
+```{r Exercises 3.2.4 3}
 ?mpg
 ```
 
 4. The plot is not useful because the variables are categorical and multiple points are plotted atop one another. We are unable to determine from this plot how many observations there are of each class-drive combination.  
-```{r Exercises 4}
+```{r Exercises 3.2.4 4}
 ggplot(data=mpg) +
     geom_point(mapping = aes(x=class, y=drv))
 ```
@@ -109,5 +109,87 @@ ggplot(data = mpg) +
 
 ```{r Set the aesthetic for blue points}
 ggplot(data = mpg) + 
-  geom_point(mapping = aes(x = displ, y = hwy), color = "blue") 
+  geom_point(mapping = aes(x = displ, y = hwy), color = "blue") # Set the aesthetic outside of aes() to manually assign it to all points
+```
+Aesthetic shapes:  
+
+![](http://r4ds.had.co.nz/visualize_files/figure-html/shapes-1.png)
+
+### Exercises 3.3.1
+
+1. The points are not blue because the color aesthetic is set inside `aes()`.
+```{r Exercises 3.3.1 1}
+# Problematic code
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color = "blue")) 
+
+# Corrected code
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy), color = "blue")
+
+```
+
+2. To determine what the categorical and continuous variables are, one can either view the tibble by typing `mpg` or by viewing the documentation `?mpg`. One may decide whether a variable is categorical or continuous by checking whether it is stored as a character, integer, or double (floating point integer) value. However, this can lead to miscategorization in some cases. For example, while year is an integer, it is typically considered a whole number, a discrete variable without a meaningful 0 value anchor, and therefore not continuous. 
+
+The categorical variables are:  
+
+- model
+- year (discrete, rather than categorical)
+- trans
+- drv
+- fl
+- class
+
+The continuous variables are:
+
+- displ
+- cyl
+- cty
+- hwy
+- year (in this data set, year is treated as an integer variable. Better to consider this "quantitative", rather than "continuous")
+
+3. A continuous variable cannot be mapped to shape. When mapped to size or color, the continuous variable is binned by equal intervals (in this case, intervals of 5 mpg). When mapped to the size aesthetic, points scale by the intervals. Continuous variables when mapped to a color aesthetic are mapped along a gradient scale.  
+```{r Exercises 3.3.1 3 shape, eval=FALSE}
+# Mapping a continuous variable to the shape aesthetic
+ggplot(data=mpg) +
+    geom_point(mapping = aes(x = displ, y = hwy, shape = cty))
+```
+```{r Exercises 3.3.1 3}
+# Mapping continuous variables to the color and size aesthetics
+ggplot(data=mpg) +
+    geom_point(mapping = aes(x = displ, y = hwy, color = cyl, size = cty))
+
+# Mapping categorical variables to size, color, and shape
+ggplot(data=mpg) +
+    geom_point(mapping = aes(x = displ, y = hwy, size = model, color = class, shape = drv))
+```
+
+4. When the same variable is mapped to multiple aesthetics, it is represented by those aesthetics.  
+```{r Exercises 3.3.1 4}
+# Mapping the same variable to multiple aesthetics
+ggplot(data=mpg) +
+    geom_point(mapping = aes(x = displ, y = hwy, color = cty, size = cty)) # Here, city is mapped to the size and color aesthetics
+```
+
+5. According to the R documentation:  
+"For shapes that have a border (like 21), you can colour the inside and  outside separately. Use the **stroke** aesthetic to modify the width of the border."  
+
+**Tip**: [You can find documentation of available colors here.](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf)
+
+```{r Exercises 3.3.1 5}
+?geom_point
+
+# Example using `stroke`
+ggplot(data=mpg)+
+    geom_point(mapping = aes(x=displ, y=hwy), shape = 21, colour = "darkgreen", fill = "gold", size = 5, stroke = 5) # `size` sets the area of the inside (gold) and `stroke` sets the area of the outline (green)
+
+# Just for fun, let's write short-hand code make the same plot
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(shape = 21, colour = "darkgreen", fill = "gold", size = 5, stroke = 5)
+```
+
+6. Setting the color aesthetic to `displ < 5` will assign one color to all x-axis (hwy) values < 5 and a different color to x-axis values ≤ 5. Since the color palette is not specified, default colors are used.  
+```{r Exercises 3.3.1 6}
+ggplot(data=mpg) +
+    geom_point(mapping = aes(x = displ, y = hwy, color = displ < 5))
 ```
