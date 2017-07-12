@@ -1,16 +1,18 @@
 ---
-title: "Working Through G. Grolemund & H. Wickhams’s [R for Data Science](http://r4ds.had.co.nz/index.html)"
+title: "Solutions to G. Grolemund & H. Wickhams’s [R for Data Science](http://r4ds.had.co.nz/index.html)"
 author: "Krista DeStasio"
 date: "7/11/2017"
 output:
-  pdf_document:
-    toc: yes
-    toc_depth: '4'
   html_document:
     toc: yes
     toc_depth: 4
     toc_float: yes
+  pdf_document:
+    toc: yes
+    toc_depth: '4'
 ---
+
+**Note:** *This is a work in progress.*  
 
 # A Brief Introduction to This File
 This R file walks through G. Grolemund & H. Wickhams’s online text, ["R for Data Science."](http://r4ds.had.co.nz/index.html) Much of the code is sourced directly from the book and credit belongs to the authors. Here, some sections of code are heavily commented so that the beginning R programmer can read through and understand what each line of code does and compare it to their own as they work through the text. Throughout, the book provides the primary and most thorough explanation. **For the greatest learning benefit, I suggest you attempt each exercise on your own before looking at the code or write-ups provided here.** Of course, there is more than one way to write code and you may find a more elegant solution that you prefer.   
@@ -33,11 +35,10 @@ lapply(list.of.packages, library, character.only = TRUE) # If the list of packag
 knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='Figs/', echo=TRUE, warning=FALSE, message=FALSE) # Set the knit options: save figures to a folder, echo code chunks in the knitted document, don't print warnings in the knitted doc, don't print messages in the knitted doc.
 ```
 
-# Begin Work-through
-## Chapter 3, Data Visualisation
+# Chapter 3, Data Visualisation
 To really understand ggplot2, I highly recommend reading [“The Layered Grammar of Graphics”](http://vita.had.co.nz/papers/layered-grammar.pdf) as suggested at the beginning of Chapter 3. 
 
-### The `mpg` data frame
+## The `mpg` data frame
 
 ```{r Examine the mpg data frame}
 str(mpg) # Look at the structure of the mpg data frame
@@ -53,7 +54,7 @@ ggplot(data=mpg) + # specify data frame
 
 The plot confirms the hypothesis that there is a negative relationship between engine size and fuel efficiency.  
 
-### Making graphs with ggplot2
+## Making graphs with ggplot2
 
 **Template:**
 ```{r Template, eval=FALSE}
@@ -61,7 +62,7 @@ ggplot(data = <DATA>) +
   <GEOM_FUNCTION>(mapping = aes(<MAPPINGS>))
 ```
 
-#### Exercises 3.2.4
+### Exercises 3.2.4
 
 1. There are no visible results from the code below.  
 ```{r Exercises 3.2.4 1}
@@ -87,7 +88,7 @@ ggplot(data=mpg) +
     geom_point(mapping = aes(x=class, y=drv))
 ```
 
-### Aesthetic mappings
+## Aesthetic mappings
 Test the hypothesis that the cars highlighted in red are hybrids by mapping car class to an aesthetic.  
 ```{r Map class to the color aesthetic}
 ggplot(data = mpg) + 
@@ -117,7 +118,7 @@ Aesthetic shapes:
 
 ![](http://r4ds.had.co.nz/visualize_files/figure-html/shapes-1.png)
 
-#### Exercises 3.3.1
+### Exercises 3.3.1
 
 1. The points are not blue because the color aesthetic is set inside `aes()`.
 ```{r Exercises 3.3.1 1}
@@ -196,7 +197,7 @@ ggplot(data=mpg) +
     geom_point(mapping = aes(x = displ, y = hwy, color = displ < 5))
 ```
 
-### Facets
+## Facets
 ```{r Facet on a single variable}
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy)) + 
@@ -215,7 +216,7 @@ ggplot(data = mpg) +
     facet_grid(. ~ cyl) # Use the . to create plots for each level of cylinder (cyl) in the columns dimension. To facet in the rows dimension, use `facet_grid(cyl ~ .)`
 ```
 
-#### Exercises 3.5.1
+### Exercises 3.5.1
 
 1. If faceting is done with a continuous variable, a plot is created for each value for which there is at least one observation.
 ```{r Exercises 3.5.1 1}
