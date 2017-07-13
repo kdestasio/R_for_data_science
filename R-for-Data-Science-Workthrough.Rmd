@@ -3,13 +3,13 @@ title: "Solutions to G. Grolemund & H. Wickhams’s [R for Data Science](http://
 author: "Krista DeStasio"
 date: "7/11/2017"
 output:
+  pdf_document:
+    toc: yes
+    toc_depth: '4'
   html_document:
     toc: yes
     toc_depth: 4
     toc_float: yes
-  pdf_document:
-    toc: yes
-    toc_depth: '4'
 ---
 
 **Note:** *This is a work in progress.*  
