@@ -13,7 +13,6 @@ output:
 ---
 
 **Note:** *This is a work in progress.*  
-
 # A Brief Introduction to This File
 This R file walks through G. Grolemund & H. Wickhams’s online text, ["R for Data Science."](http://r4ds.had.co.nz/index.html) Much of the code is sourced directly from the book and credit belongs to the authors. Here, some sections of code are heavily commented so that the beginning R programmer can read through and understand what each line of code does and compare it to their own as they work through the text. Throughout, the book provides the primary and most thorough explanation. **For the greatest learning benefit, I suggest you attempt each exercise on your own before looking at the code or write-ups provided here.** Of course, there is more than one way to write code and you may find a more elegant solution that you prefer.   
 
@@ -21,7 +20,9 @@ For those new to R and RStudio, it may be of additional benefit to knit the docu
 
 **Tip**: *If you are using RStudio, click the text next to the orange # box at the bottom of the editor window to easily navigate the code chunks.*  
 
-**Tip**: *Use the `?` before any command to view the documentation on that function. Do this often. For example, type `?setwd` to see a description, usage, arguments, and more for the function `setwd()`.* 
+**Tip**: *Use the `?` before any command to view the documentation on that function. Do this often. For example, type `?setwd` to see a description, usage, arguments, and more for the function `setwd()`.*  
+
+**Tip**: Find RStudio Cheatsheets at [https://www.rstudio.com/resources/cheatsheets/](https://www.rstudio.com/resources/cheatsheets/)
 ```{r Setup, include=FALSE}
 rm(list=ls()) # Clear the workspace
 setwd("~/Dropbox/R_projects/R_practice/") # Set the working directory
@@ -63,28 +64,42 @@ ggplot(data = <DATA>) +
 ```
 
 ### Exercises 3.2.4
+#### 1. Run ggplot(data = mpg). What do you see?  
 
-1. There are no visible results from the code below.  
-```{r Exercises 3.2.4 1}
+There are no visible results from the code below.  
+```{r Exercise 3.2.4 1}
 ggplot(data = mpg)
 ```
 
-2. Based on the output from `str(mpg)`, we see that there are 234 rows and 11 columns in the mpg data frame.  
-```{r Exercises 3.2.4 2}
+#### 2. How many rows are in mpg? How many columns?  
+
+Based on the output from `str(mpg)`, we see that there are 234 rows and 11 columns in the mpg data frame.  
+```{r Exercise 3.2.4 2}
 # Alternative means of finding number of rows and columns
 nrow(mpg) # Pring the number of rows 
 ncol(mpg)
 ```
 There are `r nrow(mpg)` rows and `r ncol(mpg)` columns in the mpg data frame.   
 
-3. The `drv` variable describes whether the vehicle is front, rear, or 4-wheel drive.  
-```{r Exercises 3.2.4 3}
+#### 3. What does the drv variable describe? Read the help for ?mpg to find out.  
+
+The `drv` variable describes whether the vehicle is front, rear, or 4-wheel drive.  
+```{r Exercise 3.2.4 3}
 ?mpg
 ```
 
-4. The plot is not useful because the variables are categorical and multiple points are plotted atop one another. We are unable to determine from this plot how many observations there are of each class-drive combination.  
-```{r Exercises 3.2.4 4}
+#### 4. Make a scatterplot of hwy vs cyl.  
+
+```{r Exercise 3.2.4 4}
 ggplot(data=mpg) +
+    geom_point(mapping = aes(x=hwy, y=cyl))
+```
+
+#### 5. What happens if you make a scatterplot of class vs drv? Why is the plot not useful?  
+
+The plot is not useful because the variables are categorical and multiple points are plotted atop one another. We are unable to determine from this plot how many observations there are of each class-drive combination.  
+```{r Exercise 3.2.4 5}
+ggplot(data = mpg) +
     geom_point(mapping = aes(x=class, y=drv))
 ```
 
@@ -120,8 +135,10 @@ Aesthetic shapes:
 
 ### Exercises 3.3.1
 
-1. The points are not blue because the color aesthetic is set inside `aes()`.
-```{r Exercises 3.3.1 1}
+#### 1. What’s gone wrong with this code? Why are the points not blue?
+
+The points are not blue because the color aesthetic is set inside `aes()`.
+```{r Exercise 3.3.1 1}
 # Problematic code
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy, color = "blue")) 
@@ -132,7 +149,9 @@ ggplot(data = mpg) +
 
 ```
 
-2. To determine what the categorical and continuous variables are, one can either view the tibble by typing `mpg` or by viewing the documentation `?mpg`. One may decide whether a variable is categorical or continuous by checking whether it is stored as a character, integer, or double (floating point integer) value. However, this can lead to miscategorization in some cases. For example, while year is an integer, it is typically considered a whole number, a discrete variable without a meaningful 0 value anchor, and therefore not continuous. 
+#### 2. Which variables in mpg are categorical? Which variables are continuous? (Hint: type ?mpg to read the documentation for the dataset). How can you see this information when you run mpg?
+
+To determine what the categorical and continuous variables are, one can either view the tibble by typing `mpg` or by viewing the documentation `?mpg`. One may decide whether a variable is categorical or continuous by checking whether it is stored as a character, integer, or double (floating point integer) value. However, this can lead to miscategorization in some cases. For example, while year is an integer, it is typically considered a whole number, a discrete variable without a meaningful 0 value anchor, and therefore not continuous. 
 
 The categorical variables are:  
 
@@ -151,13 +170,16 @@ The continuous variables are:
 - hwy
 - year (in this data set, year is treated as an integer variable. Better to consider this "quantitative", rather than "continuous")
 
-3. A continuous variable cannot be mapped to shape. When mapped to size or color, the continuous variable is binned by equal intervals (in this case, intervals of 5 mpg). When mapped to the size aesthetic, points scale by the intervals. Continuous variables when mapped to a color aesthetic are mapped along a gradient scale.  
-```{r Exercises 3.3.1 3 shape, eval=FALSE}
+#### 3.Map a continuous variable to color, size, and shape. How do these aesthetics behave differently for categorical vs. continuous variables?  
+
+A continuous variable cannot be mapped to shape. When mapped to size or color, the continuous variable is binned by equal intervals (in this case, intervals of 5 mpg). When mapped to the size aesthetic, points scale by the intervals. Continuous variables when mapped to a color aesthetic are mapped along a gradient scale.  
+```{r Exercise 3.3.1 3.1, eval=FALSE}
 # Mapping a continuous variable to the shape aesthetic
 ggplot(data=mpg) +
     geom_point(mapping = aes(x = displ, y = hwy, shape = cty))
 ```
-```{r Exercises 3.3.1 3}
+
+```{r Exercise 3.3.1 3.2}
 # Mapping continuous variables to the color and size aesthetics
 ggplot(data=mpg) +
     geom_point(mapping = aes(x = displ, y = hwy, color = cyl, size = cty))
@@ -167,19 +189,23 @@ ggplot(data=mpg) +
     geom_point(mapping = aes(x = displ, y = hwy, size = model, color = class, shape = drv))
 ```
 
-4. When the same variable is mapped to multiple aesthetics, it is represented by those aesthetics.  
-```{r Exercises 3.3.1 4}
+#### 4. What happens if you map the same variable to multiple aesthetics?  
+
+When the same variable is mapped to multiple aesthetics, it is represented by those aesthetics.  
+```{r Exercise 3.3.1 4}
 # Mapping the same variable to multiple aesthetics
 ggplot(data=mpg) +
     geom_point(mapping = aes(x = displ, y = hwy, color = cty, size = cty)) # Here, city is mapped to the size and color aesthetics
 ```
 
-5. According to the R documentation:  
+#### 5. What does the stroke aesthetic do? What shapes does it work with? (Hint: use ?geom_point)  
+
+According to the R documentation:  
 "For shapes that have a border (like 21), you can colour the inside and  outside separately. Use the **stroke** aesthetic to modify the width of the border."  
 
 **Tip**: [You can find documentation of available colors here.](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf)
 
-```{r Exercises 3.3.1 5}
+```{r Exercise 3.3.1 5}
 ?geom_point
 
 # Example using `stroke`
@@ -191,8 +217,10 @@ ggplot(mpg, aes(displ, hwy)) +
   geom_point(shape = 21, colour = "darkgreen", fill = "gold", size = 5, stroke = 5)
 ```
 
-6. Setting the color aesthetic to `displ < 5` will assign one color to all x-axis (hwy) values < 5 and a different color to x-axis values $\ge$ 5. Since the color palette is not specified, default colors are used.  
-```{r Exercises 3.3.1 6}
+#### 6. What happens if you map an aesthetic to something other than a variable name, like aes(colour = displ < 5)?  
+
+Setting the color aesthetic to `displ < 5` will assign one color to all x-axis (hwy) values < 5 and a different color to x-axis values $\ge$ 5. Since the color palette is not specified, default colors are used.  
+```{r Exercise 3.3.1 6}
 ggplot(data=mpg) +
     geom_point(mapping = aes(x = displ, y = hwy, color = displ < 5))
 ```
@@ -218,34 +246,40 @@ ggplot(data = mpg) +
 
 ### Exercises 3.5.1
 
-1. If faceting is done with a continuous variable, a plot is created for each value for which there is at least one observation.
-```{r Exercises 3.5.1 1}
+#### 1. What happens if you facet on a continuous variable?  
+
+If faceting is done with a continuous variable, a plot is created for each value for which there is at least one observation.
+```{r Exercise 3.5.1 1}
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy)) + 
   facet_wrap(~ hwy, nrow = 2) 
 ```
 
-2. The empty cells in the plot with `facet_grid(drv ~ cyl)` indicate that there are no cars with at the intersection of that number of cylinders and that type of drive (e.g. no cars with 5 cylinders and 4-wheel drive). The absence of vehicles corresponding to specific cylinde  r-drive combinations is also evident in the second plot. Those intersections in the second plot without a point correspond to the empty cells in the first plot (see again cars with 5 cylinders on the y-axis and 4-wheel drive on the x-axis).
+#### 2. What do the empty cells in plot with facet_grid(drv ~ cyl) mean? How do they relate to this plot?  
 
-```{r Exercises 3.5.1 2}
-# First plot, with drive and cylinder are faceted
+The empty cells in the plot with `facet_grid(drv ~ cyl)` indicate that there are no cars with at the intersection of that number of cylinders and that type of drivetrain (e.g. no cars with 5 cylinders and 4-wheel drive). The absence of vehicles corresponding to specific cylinde  r-drive combinations is also evident in the second plot. Those intersections in the second plot without a point correspond to the empty cells in the first plot (see again cars with 5 cylinders on the y-axis and 4-wheel drive on the x-axis).
+
+```{r Exercise 3.5.1 2}
+# First plot, with drivetrain and cylinder faceted
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy)) + 
   facet_grid(drv ~ cyl)
 
-# Second plot, with drive and cylinder represented on the axes of a single plot
+# Second plot, with drivetrain and cylinder represented on the axes of a single plot
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = drv, y = cyl))
 ```
 
-3. The first plot shows highway miles per gallon and engine displacement faceted by drive type. The `.` in the second position specifies that drive type should be displayed in rows. The second plot shows highway miles per gallon and engine displacement faceted by number of cylinders. The `.` in the first position specifies that number of cylinders should be displayed in columns.  
-```{r Exercises 3.5.1 3}
-# Plot of highway mpg and engine displacement faceted by drive type
+#### 3. What plots does the following code make? What does . do?  
+
+The first plot shows highway miles per gallon and engine displacement faceted by drivetrain type. The `.` in the second position specifies that drivetrain type should be displayed in rows. The second plot shows highway miles per gallon and engine displacement faceted by number of cylinders. The `.` in the first position specifies that number of cylinders should be displayed in columns.  
+```{r Exercise 3.5.1 3}
+# Plot of highway mpg and engine displacement faceted by drivetrain type
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy)) +
   facet_grid(drv ~ .)
 
-# The above is the same as the following except that the drive labels shift from right to top aligned. Uncomment and run the code to see the difference.
+# The above is the same as the following except that the drivetrain labels shift from right to top aligned. Uncomment and run the code to see the difference.
 #ggplot(data = mpg) + 
 #  geom_point(mapping = aes(x = displ, y = hwy)) +
 #  facet_wrap(~ drv, nrow = 3) 
@@ -261,8 +295,10 @@ ggplot(data = mpg) +
 #    facet_wrap(~ cyl, nrow = 1) 
 ```
 
-4. The advantage of using faceting rather than the color aesthetic is that with separate plots it is easier to see the shape and spread of the data points for each level of the variable. A disadvantage is that it's difficult to see the overall shape and spread of the observations across levels of the faceted variable. While using the color aesthetic works well with the mpg dataset, with a larger dataset, the likelihood of overlapping data points increases and with enough overlapping observations jittering may be insufficient. It may therefore be preferable to use faceting with large datasets.  
-```{r Exercises 3.5.1 4}
+#### 4. Take the first faceted plot in this section. What are the advantages to using faceting instead of the colour aesthetic? What are the disadvantages? How might the balance change if you had a larger dataset?  
+
+The advantage of using faceting rather than the color aesthetic is that with separate plots it is easier to see the shape and spread of the data points for each level of the variable. A disadvantage is that it's difficult to see the overall shape and spread of the observations across levels of the faceted variable. While using the color aesthetic works well with the mpg dataset, with a larger dataset, the likelihood of overlapping data points increases and with enough overlapping observations jittering may be insufficient. It may therefore be preferable to use faceting with large datasets.  
+```{r Exercise 3.5.1 4}
 # Plot with facets
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = displ, y = hwy)) + 
@@ -273,14 +309,143 @@ ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, color = class))
 ```
 
-5. 
+### 5. Read ?facet_wrap. What does nrow do? What does ncol do? What other options control the layout of the individual panels? Why doesn’t facet_grid() have nrow and ncol argument?  
 
 `nrow` - specifies the number of rows into which the faceted plots are fitted.  
 `ncol` - specifies the number of columns into which the faceted plots are fitted.  
 `facet_grid()` does not have `nrow` or `ncol` arguments because the number of rows and columns is determined by the number of levels of the row and column facetting variables.  
-```{r Exercises 3.5.1 5}
+```{r Exercise 3.5.1 5}
 ?facet_wrap
 ```
 
-6. One should put the variable with more unique levels in the columns so the plots can extend vertically where there is more space. The horizontal space is limited by the page width and adding more plots compresses them, making them difficult to read.  
+#### 6. When using facet_grid() you should usually put the variable with more unique levels in the columns. Why?  
+One should put the variable with more unique levels in the columns so the plots can extend vertically where there is more space. The horizontal space is limited by the page width and adding more plots compresses them, making them difficult to read.  
 
+## Geometric objects
+
+```{r Plot with point and smooth geoms}
+# Scatterplot
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy))
+
+# Smooth geom plot
+ggplot(data = mpg) + 
+  geom_smooth(mapping = aes(x = displ, y = hwy))
+```
+
+```{r Use linetype}
+# Use a different linetype for eaxh unique value of drv
+ggplot(data = mpg) + 
+  geom_smooth(mapping = aes(x = displ, y = hwy, linetype = drv))
+```
+
+```{r Multiple geoms in one plot}
+# Plot a single geom to display the data
+ggplot(data = mpg) +
+  geom_smooth(mapping = aes(x = displ, y = hwy))
+
+# Set the `group` aesthetic to `drv` to draw separate geoms for each unique value of the variable
+ggplot(data = mpg) +
+  geom_smooth(mapping = aes(x = displ, y = hwy, group = drv))
+
+# Set the color aesthetic to `drv` to automatically group the data by drivetrain and distinguish them by color
+ggplot(data = mpg) +
+  geom_smooth(
+    mapping = aes(x = displ, y = hwy, color = drv),
+    show.legend = FALSE
+  )
+```
+
+```{r Add multiple geoms to a plot}
+# Plot a smooth geom over a scatterplot of the data, the verbose way
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) +
+  geom_smooth(mapping = aes(x = displ, y = hwy))
+
+# The same plot with mappings passed to `ggplot()`
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point() + 
+  geom_smooth()
+```
+
+```{r Overwrite global mappings in single layer}
+# Color to the points by car class
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point(mapping = aes(color = class)) + 
+  geom_smooth()
+
+# Plot all classes of car, but draw a smooth line geom for only cars of the subcompact class
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point(mapping = aes(color = class)) + 
+  geom_smooth(data = filter(mpg, class == "subcompact"), se = FALSE)
+```
+
+### Exercises 3.6.1
+
+#### 1. What geom would you use to draw a line chart? A boxplot? A histogram? An area chart?  
+
+What geom would you use to draw a(n)  
+ - line chart: `geom_line()`
+ - boxplot: `geom_boxplot()`
+ - histogram: `geom_histogram()`
+ - area chart: `geom_area()`  
+ 
+#### 2. Run this code in your head and predict what the output will look like. Then, run the code in R and check your predictions.  
+
+The output will be a scatterplot with engine displacement mapped to the x-axis, miles per gallon highway on the y-axis, and the points colored by type of drivetrain. The scatterplot will be overlaid by one solid smooth line for each drivetrain type and will not expand to indicate the confidence interval. The color of the line for a given type of drivetrain will match the color of the points for the same.  
+ 
+```{r Excercise 3.6.1 2}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) + 
+  geom_point() + 
+  geom_smooth(se = FALSE)
+```
+
+#### 3. What does show.legend = FALSE do? What happens if you remove it? Why do you think I used it earlier in the chapter?  
+
+`show.legend = FALSE` indicates that a legend should not be included in the plot. If it is removed, the default is to include a legend if any aesthetics are mapped. It may have been used earlier in the chapter to introduce us to the option, to make the final graph in the set of three match the first two, which did not have legends, or for another unknown reason.  
+
+#### 4. What does the se argument to geom_smooth() do?  
+
+The `se` argument to `geom_smoot()` indicates whether to include confidence intervals around smooth. The default is TRUE.  
+
+#### 5. Will these two graphs look different? Why/why not?  
+
+The two plots will be identical. In the first polot, the selection o `mpg` as the data frame from which to draw the variables and the mapping of `disp` to the x-axis and `hwy` to the y-axis is specified in the global mappings, within `ggplot()`. These mappings extend to the following layers, in this case `geom_point()` and `geom_smooth()` unless those layers explicitly overwrite the global mappings, which they don't here. In the second plot, the same mappings are specified as in the global settings of the first plot. Therefore, in both plots, the mappings specified for `geom_point()` and `geom_smooth()` are identical, though they are explicitly laid out for each layer in plot 2, whereas they are carried over from the global mappings in plot 1.  
+```{r Exercise 3.6.1 5}
+# Plot using global mappings
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point() + 
+  geom_smooth()
+
+# Plot specifcing mappings in each geom layer
+ggplot() + 
+  geom_point(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_smooth(data = mpg, mapping = aes(x = displ, y = hwy))
+```
+
+#### 6. Recreate the R code necessary to generate the following graphs.
+```{r Exercise 3.6.1 6}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+    geom_point() +
+    geom_smooth(se=FALSE)
+
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+    geom_point() +
+    geom_smooth(aes(group = drv), se=FALSE)
+
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) +
+    geom_point() + 
+    geom_smooth(se=FALSE)
+
+ggplot(data = mpg, mapping = aes( x = displ, y = hwy)) +
+    geom_point(aes(color = drv)) +
+    geom_smooth(se=FALSE)
+
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+    geom_point(aes(color=drv)) + 
+    geom_smooth(aes(linetype=drv),se=FALSE)
+
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point(size = 4, colour = "white") + 
+  geom_point(aes(colour = drv))
+```
