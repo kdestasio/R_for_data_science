@@ -589,7 +589,7 @@ The parameters of `stat_ _smooth` are listed in its documentation. See `?stat_sm
 #### 5. In our proportion bar chart, we need to set group = 1. Why? In other words what is the problem with these two graphs?
 
   
-```{r Excercise 3.8.1 5}
+```{r Excercise 3.7.1 5}
 ggplot(data = diamonds) + 
   geom_bar(mapping = aes(x = cut, y = ..prop..))
 ggplot(data = diamonds) + 
@@ -598,10 +598,103 @@ ggplot(data = diamonds) +
 
 According to the documentation, we need to set `group=1` so that "the height of the bar [is] proportional to the number of cases in each group." When `group=1` the proportions are calculated for level of `cut`, rather than with the entire dataset. See the corrected plots below: 
 
-```{r Exercise 3.8.1 5 corrected}
+```{r Exercise 3.7.1 5 corrected}
 ggplot(data = diamonds) + 
   geom_bar(mapping = aes(x = cut, y = ..prop.., group=1))
 ggplot(data = diamonds) + 
   geom_bar(mapping = aes(x = cut, fill = color, y = ..prop.., group=1))
 ```
 
+### Position adjustments
+
+```{r Using color and fill}
+# Plot a histogram of the frequency of each type of cut and outline the bar for each cut in a different color
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, colour = cut))
+
+# Plot a histogram of the frequency of each type of cut and fill the bar for each cut with a different color
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = cut))
+```
+
+```{r Map fill to a different variable}
+# Use a different color for each level of clarity and fill the `cut` bars with the appropriate proportion of each color
+ggplot(data=diamonds) +
+    geom_bar(mapping = aes(x=cut, fill=clarity))
+```
+
+```{r Position identity}
+# Make the bars semi transparant so they can be seen despite overlapping
+ggplot(data = diamonds, mapping = aes(x = cut, fill = clarity)) + 
+  geom_bar(alpha = 1/5, position = "identity") # Set alpha low to make bars semi-transparent
+
+# Make bars entirely transparent
+ggplot(data = diamonds, mapping = aes(x = cut, colour = clarity)) + 
+  geom_bar(fill = NA, position = "identity") # set `fill=NA` to make the bars entirely transparent
+```
+
+```{r Position fill}
+# Make each set of stacked bars the same height for easy comparison
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = clarity), position = "fill")
+```
+
+```{r Position dodge}
+# Place overlapping bars beside one another
+ggplot(data=diamonds) +
+    geom_bar(mapping = aes(x=cut, fill = clarity), position = "dodge")
+```
+
+```{r Position jitter}
+# Add a small amount of random noise to each point to see ovverlapping points
+ggplot(data=mpg) +
+    geom_point(mapping = aes(x = displ, y = hwy), position = "jitter")
+```
+
+#### Help pages associated with adjustments
+
+`?position_dodge`  
+`?position_fill`  
+`?position_identity`  
+`position_jitter`  
+`?position_stack`  
+
+### Exercises 3.8.1
+
+#### 1. What is the problem with this plot? How could you improve it?
+
+```{r Exercise 3.8.1 1}
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + 
+  geom_point()
+```
+
+The above plot suffers from overplotting; it has overlapping data points. As a result, we cannot use the plot to see the true spread of the data. To improve the plot, we can add jitter. See the plot below.
+
+```{r Exercise 3.8.1 solution}
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + 
+    geom_point() +
+    geom_jitter()
+```
+
+#### 2. What parameters to geom_jitter() control the amount of jittering?
+
+According to the documentation, `width` and `height` control the amount of jittering. See `?geom_jitter()` for more detail.    
+
+#### 3. Compare and contrast geom_jitter() with geom_count().
+
+According to the documentation, `geom_count` "is a variant geom_point that counts the number of observations at each location, then maps the count to point area. It useful when you have discrete data and overplotting." The resultant plot looks like:  
+
+```{r Exercise 3.8.1 3}
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + 
+    geom_point() +
+    geom_count()
+```
+
+#### 4. What’s the default position adjustment for geom_boxplot()? Create a visualisation of the mpg dataset that demonstrates it.  
+
+The default position adjustment for `geom_boxplot()` is dodge. Note that the geoms for the different drivetrain types are positioned next to one another in the plot, rather than overlapping.   
+
+```{r Exercise 3.8.1 4}
+ggplot(data=mpg, mapping = aes(x=class, y=cty, color=drv)) + 
+    geom_boxplot()
+```
