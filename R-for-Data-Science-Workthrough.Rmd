@@ -449,3 +449,159 @@ ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
   geom_point(size = 4, colour = "white") + 
   geom_point(aes(colour = drv))
 ```
+
+## Statistical transformations
+
+```{r Simple bar chart}
+ # Simple bar chart using `geom_bar()`
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut))
+
+?geom_bar
+
+# The same plot using `stat_count()`
+ggplot(data = diamonds) + 
+  stat_count(mapping = aes(x = cut))
+```
+
+```{r Override the default stat}
+# Create a data set of type tribble and call it "demo"
+demo <- tribble(
+  ~cut,         ~freq,
+  "Fair",       1610,
+  "Good",       4906,
+  "Very Good",  12082,
+  "Premium",    13791,
+  "Ideal",      21551
+)
+
+# Create a bar chart where the height of the bars is indicated by the value in the `freq` column of `demo`
+ggplot(data = demo) +
+  geom_bar(mapping = aes(x = cut, y = freq), stat = "identity")
+```
+
+```{r Override the default mapping}
+# Create a bar chart of proportion rather than count
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, y = ..prop.., group = 1))
+```
+
+```{r Use stat_summary}
+# Summarize the y values for each unique x value
+ggplot(data = diamonds) + 
+  stat_summary(
+    mapping = aes(x = cut, y = depth),
+    fun.ymin = min, # get the minimum depth value for each level of cut
+    fun.ymax = max, # get the maximum depth value for each level of cut
+    fun.y = median # Get the median depth for each level of cur
+  )
+```
+
+### Exercises 3.7.1
+
+#### 1. What is the default geom associated with stat_summary()? How could you rewrite the previous plot to use that geom function instead of the stat function?
+
+The default geom associated with `stat_summary()` is `geom_pointrange()`.
+```{r Exercise 3.7.1 1}
+?stat_summary
+
+# Use the geom function "pointrange"
+ggplot(data = diamonds) +
+  geom_pointrange(mapping = aes(x = cut, y = depth),
+                  stat = "summary",
+                  fun.ymin = min,
+                  fun.ymax = max,
+                  fun.y = median)
+```
+#### 2. What does geom_col() do? How is it different to geom_bar()?
+
+`geom_col()`does not use `stat = "count"`. Identical to `geom_bar(stat="identity")`, it assumes that the values are already appropriately transformed into single values. In contrast, `geom_bar()` counts the rows using `stat_count()` to draw the bar chart.  
+
+From the documentation:  
+
+"There are two types of bar charts: `geom_bar` makes the height of the bar proportional to the number of cases in each group (or if the weight aethetic is supplied, the sum of the weights). If you want the heights of the bars to represent values in the data, use geom_col instead. geom_bar uses stat_count by default: it counts the number of cases at each x position. `geom_col` uses `stat_identity`: it leaves the data as is."  
+
+#### 3. Most geoms and stats come in pairs that are almost always used in concert. Read through the documentation and make a list of all the pairs. What do they have in common?  
+
+geom                    | stat
+----------------------  | --------
+ggplot2::geom_bar		| count
+ggplot2::geom_bin2d		| bin2d
+ggplot2::geom_blank		| identity
+ggplot2::geom_boxplot   | boxplot
+ggplot2::geom_contour   | contour
+ggplot2::geom_count	    | sum
+ggplot2::geom_density   | density
+ggplot2::geom_density_2d| density2d
+ggplot2::geom_errorbarh	| identity
+ggplot2::geom_hex       | binhex
+ggplot2::geom_freqpoly  | bin
+ggplot2::geom_jitter    | identity
+ggplot2::geom_crossbar	| identity
+ggplot2::geom_map		| identity 
+ggplot2::geom_path		| identity
+ggplot2::geom_point		| identity
+ggplot2::geom_polygon	| identity
+ggplot2::geom_quantile	| quantile
+ggplot2::geom_ribbon	| identity
+ggplot2::geom_rug		| identity
+ggplot2::geom_segment	| identity
+ggplot2::geom_smooth	| smooth
+ggplot2::geom_spoke		| identity
+ggplot2::geom_label		| identity
+ggplot2::geom_raster	| identity
+ggplot2::geom_violin	| ydensity
+
+Table: Which stat each geom pairs with
+
+
+stat            | geom
+--------------  | --------
+stat_count      | bar
+stat_bin2d      | tile
+stat_identity   | point
+stat_boxplot    | boxplot
+stat_contour    | contour
+stat_sum        | point
+stat_density    | area
+stat_density2d  | density_2d
+stat_bin_hex    | hex
+stat_bin        | bar
+stat_quantile   | quantile
+stat_smooth     | smooth
+stat_ydensity   | violin
+
+Table: Which geom each stat pairs with  
+Many of the geoms and stats share their default pairmate.  
+
+#### 4. What variables does stat_smooth() compute? What parameters control its behaviour?
+
+--------- | ---
+`y`       | predicted value
+`ymin`    | lower pointwise confidence interval around the mean
+`ymax`    | upper pointwise confidence interval around the mean
+`se`      | standard error
+
+Table: `stat_smooth()` computes  
+
+The parameters of `stat_ _smooth` are listed in its documentation. See `?stat_smooth`  
+
+#### 5. In our proportion bar chart, we need to set group = 1. Why? In other words what is the problem with these two graphs?
+
+  
+```{r Excercise 3.8.1 5}
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, y = ..prop..))
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = color, y = ..prop..))
+```
+
+According to the documentation, we need to set `group=1` so that "the height of the bar [is] proportional to the number of cases in each group." When `group=1` the proportions are calculated for level of `cut`, rather than with the entire dataset. See the corrected plots below: 
+
+```{r Exercise 3.8.1 5 corrected}
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, y = ..prop.., group=1))
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = color, y = ..prop.., group=1))
+```
+
