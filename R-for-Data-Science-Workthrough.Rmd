@@ -28,7 +28,7 @@ rm(list=ls()) # Clear the workspace
 setwd("~/Dropbox/R_projects/R_practice/") # Set the working directory
 
 ## Install and load required packages
-list.of.packages <- c("tidyverse", "knitr") # Make a character vector of packages used in the script
+list.of.packages <- c("tidyverse", "knitr", "maps") # Make a character vector of packages used in the script
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])] # Which packages are not already installed
 if(length(new.packages)) install.packages(new.packages) 
 lapply(list.of.packages, library, character.only = TRUE) # If the list of packages we want and the list of new packages is not of the same length, install the packages listed in new.packages
@@ -605,7 +605,7 @@ ggplot(data = diamonds) +
   geom_bar(mapping = aes(x = cut, fill = color, y = ..prop.., group=1))
 ```
 
-### Position adjustments
+## Position adjustments
 
 ```{r Using color and fill}
 # Plot a histogram of the frequency of each type of cut and outline the bar for each cut in a different color
@@ -651,7 +651,7 @@ ggplot(data=mpg) +
     geom_point(mapping = aes(x = displ, y = hwy), position = "jitter")
 ```
 
-#### Help pages associated with adjustments
+### Help pages associated with adjustments
 
 `?position_dodge`  
 `?position_fill`  
@@ -697,4 +697,84 @@ The default position adjustment for `geom_boxplot()` is dodge. Note that the geo
 ```{r Exercise 3.8.1 4}
 ggplot(data=mpg, mapping = aes(x=class, y=cty, color=drv)) + 
     geom_boxplot()
+```
+
+## Coordinate systems
+
+```{r coord_flip}
+# Boxplot of highway miles per gallon by car class
+ggplot(data = mpg, mapping = aes(x = class, y = hwy)) + 
+  geom_boxplot()
+
+# Same boxplot with the x and y axes flipped
+ggplot(data = mpg, mapping = aes(x = class, y = hwy)) + 
+  geom_boxplot() +
+  coord_flip()
+```
+
+```{r coord_quickmap}
+# Create a data frame from a subset of the maps data for region `nz`
+nz <- map_data("nz")
+
+# Plot the map data
+ggplot(nz, aes(long, lat, group = group)) +
+  geom_polygon(fill = "white", colour = "black")
+
+# Use `coord_quickmap()` to correctly set the aspect ratio for the map
+ggplot(nz, aes(long, lat, group = group)) +
+  geom_polygon(fill = "white", colour = "black") +
+  coord_quickmap()
+```
+
+```{r coord_polar}
+# Create a bar chart and save it to the variable `bar`
+bar <- ggplot(data = diamonds) + 
+  geom_bar(
+    mapping = aes(x = cut, fill = cut), 
+    show.legend = FALSE,
+    width = 1
+  ) + 
+  theme(aspect.ratio = 1) +
+  labs(x = NULL, y = NULL)
+
+# Flip the bar chart x and y axes and print it
+bar + coord_flip()
+
+# Create a Coxocomb chart from the bar chart by mapping the data to polar coordinates
+bar + coord_polar()
+```
+
+### Exercises 3.9.1
+
+#### 1. Turn a stacked bar chart into a pie chart using coord_polar().
+
+Let's use our stacked bar plot from earlier and map it to polar coordinates.  
+```{r Exercise 3.9.1 1}
+# Stacked
+ggplot(data=diamonds) +
+    geom_bar(mapping = aes(x=cut, fill=clarity))
+
+# Polar
+ggplot(data=diamonds) +
+    geom_bar(mapping = aes(x=cut, fill=clarity)) +
+    coord_polar()
+```
+
+#### 2. What does labs() do? Read the documentation.
+
+`labs()` allows the user to manually specify title, subtitle, axis, and legend labels of plots. See `?labs()`  
+
+#### 3. What’s the difference between coord_quickmap() and coord_map()?
+
+From the documentation:  
+"`coord_map` projects a portion of the earth, which is approximately spherical, onto a flat 2D plane using any projection defined by the mapproj package. Map projections do not, in general, preserve straight lines, so this requires considerable computation. `coord_quickmap` is a quick approximation that does preserve straight lines. It works best for smaller areas closer to the equator."
+
+#### 4. What does the plot below tell you about the relationship between city and highway mpg? Why is coord_fixed() important? What does geom_abline() do?
+
+The relationship between city and highway mpg is positive and approximately linear such that the higher a car's city mpg is, the higher it's highway mpg tends to be. `coord_fixed()` is important because forces the units on the x and y axes to coform making them directly comparable. `geom_abline()` adds reference lines to the plot to which we can compare the data. The default line has an intercept of 0 and slope of 1. Comparing our data to the line, we see that highway mpg is slightly higher than city mpg on average.    
+````{r Exercise 3.9.1 4}
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
+  geom_point() + 
+  geom_abline() +
+  coord_fixed()
 ```
