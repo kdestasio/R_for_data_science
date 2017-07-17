@@ -3,16 +3,17 @@ title: "Solutions to G. Grolemund & H. Wickhams’s [R for Data Science](http://
 author: "Krista DeStasio"
 date: "7/11/2017"
 output:
-  pdf_document:
-    toc: yes
-    toc_depth: '4'
   html_document:
     toc: yes
     toc_depth: 4
     toc_float: yes
+  pdf_document:
+    toc: yes
+    toc_depth: '4'
 ---
 
 **Note:** *This is a work in progress.*  
+
 # A Brief Introduction to This File
 This R file walks through G. Grolemund & H. Wickhams’s online text, ["R for Data Science."](http://r4ds.had.co.nz/index.html) Much of the code is sourced directly from the book and credit belongs to the authors. Here, some sections of code are heavily commented so that the beginning R programmer can read through and understand what each line of code does and compare it to their own as they work through the text. Throughout, the book provides the primary and most thorough explanation. **For the greatest learning benefit, I suggest you attempt each exercise on your own before looking at the code or write-ups provided here.** Of course, there is more than one way to write code and you may find a more elegant solution that you prefer.   
 
@@ -309,7 +310,7 @@ ggplot(data = mpg) +
   geom_point(mapping = aes(x = displ, y = hwy, color = class))
 ```
 
-### 5. Read ?facet_wrap. What does nrow do? What does ncol do? What other options control the layout of the individual panels? Why doesn’t facet_grid() have nrow and ncol argument?  
+#### 5. Read ?facet_wrap. What does nrow do? What does ncol do? What other options control the layout of the individual panels? Why doesn’t facet_grid() have nrow and ncol argument?  
 
 `nrow` - specifies the number of rows into which the faceted plots are fitted.  
 `ncol` - specifies the number of columns into which the faceted plots are fitted.  
@@ -771,10 +772,29 @@ From the documentation:
 
 #### 4. What does the plot below tell you about the relationship between city and highway mpg? Why is coord_fixed() important? What does geom_abline() do?
 
-The relationship between city and highway mpg is positive and approximately linear such that the higher a car's city mpg is, the higher it's highway mpg tends to be. `coord_fixed()` is important because forces the units on the x and y axes to coform making them directly comparable. `geom_abline()` adds reference lines to the plot to which we can compare the data. The default line has an intercept of 0 and slope of 1. Comparing our data to the line, we see that highway mpg is slightly higher than city mpg on average.    
+The relationship between city and highway mpg is positive and approximately linear such that the higher a car's city mpg is, the higher it's highway mpg tends to be. `coord_fixed()` is important because forces the units on the x and y axes to coform making them directly comparable. `geom_abline()` adds reference lines to the plot to which we can compare the data. The default line has an intercept of 0 and slope of 1. Comparing our data to the line, we see that highway mpg is slightly higher than city mpg on average.  
 ````{r Exercise 3.9.1 4}
 ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
   geom_point() + 
   geom_abline() +
   coord_fixed()
 ```
+
+## The layered grammar of graphics
+### Code template with position adjustments, stats, coordinate systems, and faceting.  
+
+```
+ggplot(data = <DATA>) +  
+  <GEOM_FUNCTION>(  
+     mapping = aes(<MAPPINGS>),  
+     stat = <STAT>,   
+     position = <POSITION>  
+  ) +  
+  <COORDINATE_FUNCTION> +  
+  <FACET_FUNCTION>  
+  ```
+
+**Steps for transforming data into a plot**  
+![](http://r4ds.had.co.nz/images/visualization-grammar-3.png)
+
+  
