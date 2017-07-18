@@ -1,16 +1,15 @@
 ---
-title: Solutions to G. Grolemund & H. Wickhams’s [R for Data Science](http://r4ds.had.co.nz/index.html),
-  Chapter 3
+title: Solutions to G. Grolemund & H. Wickhams’s [R for Data Science](http://r4ds.had.co.nz/index.html), Chapter 3
 author: "Krista DeStasio"
 date: "7/11/2017"
 output:
-  pdf_document:
-    toc: yes
-    toc_depth: '4'
   html_document:
     toc: yes
     toc_depth: 4
     toc_float: yes
+  pdf_document:
+    toc: yes
+    toc_depth: '4'
 ---
 
 # A Brief Introduction to This File
@@ -33,7 +32,8 @@ new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"
 if(length(new.packages)) install.packages(new.packages) 
 lapply(list.of.packages, library, character.only = TRUE) # If the list of packages we want and the list of new packages is not of the same length, install the packages listed in new.packages
 
-knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='Figs/', echo=TRUE, warning=FALSE, message=FALSE) # Set the knit options: save figures to a folder, echo code chunks in the knitted document, don't print warnings in the knitted doc, don't print messages in the knitted doc.
+knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='Figs_ch03/', 
+                      echo=TRUE, warning=FALSE, message=FALSE) # Set the knit options: save figures to a folder, echo code chunks in the knitted document, don't print warnings in the knitted doc, don't print messages in the knitted doc.
 ```
 
 # Chapter 3, Data Visualisation
