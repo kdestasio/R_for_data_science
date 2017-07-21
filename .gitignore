@@ -2,3 +2,6 @@
 
 #Directories
 Figs/
+
+#Files
+.DS_Store
