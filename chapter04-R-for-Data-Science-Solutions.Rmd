@@ -1,21 +1,16 @@
 ---
-title: Solutions to G. Grolemund & H. Wickhams’s [R for Data Science](http://r4ds.had.co.nz/index.html), Chapter
-  4
+title: Solutions to G. Grolemund & H. Wickhams’s [R for Data Science](http://r4ds.had.co.nz/index.html),
+  Chapter 4
 author: "Krista DeStasio"
 date: "7/16/2017"
-output: html_document
----
-
-author: "Krista DeStasio"
-date: "7/11/2017"
 output:
-  pdf_document:
-    toc: yes
-    toc_depth: '4'
   html_document:
     toc: yes
     toc_depth: 4
     toc_float: yes
+  pdf_document:
+    toc: yes
+    toc_depth: '4'
 ---
 
 # A Brief Introduction to This File
