@@ -24,7 +24,7 @@ For those new to R and RStudio, it may be of additional benefit to knit the docu
 **Tip**: Find RStudio Cheatsheets at [https://www.rstudio.com/resources/cheatsheets/](https://www.rstudio.com/resources/cheatsheets/)
 ```{r Setup, include=FALSE}
 rm(list=ls()) # Clear the workspace
-setwd("~/Dropbox/R_projects/R_practice/") # Set the working directory
+setwd("~/Dropbox/code/R/R_for_data_science/") # Set the working directory
 
 ## Install and load required packages
 list.of.packages <- c("tidyverse", "knitr", "maps") # Make a character vector of packages used in the script
