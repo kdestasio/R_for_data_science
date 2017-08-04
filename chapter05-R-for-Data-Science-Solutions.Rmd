@@ -26,7 +26,7 @@ For those new to R and RStudio, it may be of additional benefit to knit the docu
 **Tip**: Find RStudio Cheatsheets at [https://www.rstudio.com/resources/cheatsheets/](https://www.rstudio.com/resources/cheatsheets/)
 ```{r Setup, include=FALSE}
 rm(list=ls()) # Clear the workspace
-setwd("~/Dropbox/R_projects/R_practice/") # Set the working directory
+setwd("~/Dropbox/code/R/R_for_data_science/") # Set the working directory
 
 ## Install and load required packages
 list.of.packages <- c("knitr", "tidyverse", "nycflights13") # Make a character vector of packages used in the script
@@ -55,7 +55,7 @@ The six key `dplyr` functions:
 `summarise()`  
 `groupby()`  
 
-## filter()
+## `filter()`
 ```{r Filter Jan 1st flights}
 filter(flights, month == 1, day == 1)
 jan1 <- filter(flights, month == 1, day == 1)
@@ -74,7 +74,8 @@ Comparison operators:
 `==`  
 
 ```{r Operator error}
-filter(flights, month = 1)
+# filter(flights, month = 1) # wrong
+filter(flights, month == 1) # corrected
 ```
 
 ```{r Floating point numbers}
@@ -100,3 +101,216 @@ filter(flights, arr_delay <= 120, dep_delay <= 120)
 ```
 
 ### Missing values  
+```{r Exploring missing values}
+NA > 5
+10 == NA
+NA + 10
+NA / 2
+NA == NA
+```
+
+```{r Explicit NA example}
+# Let x be Mary's age. We don't know how old she is.
+x <- NA
+
+# Let y be John's age. We don't know how old he is.
+y <- NA
+
+# Are John and Mary the same age?
+x == y
+
+# We don't know!
+
+is.na(x) # Is the value of x missing
+```
+
+### Exercises 5.2.4
+#### 1. Find all flights that  
+
+    1. Had an arrival delay of two or more hours 
+```{r Exercise 5.2.4 1.1}
+filter(flights, arr_delay >= 120)
+```
+
+    2. Flew to Houston (IAH or HOU)  
+```{r Exercise 5.2.4 1.2}
+filter(flights, dest %in% c("IAH", "HOU"))
+# or:
+filter(flights, dest == "IAH" | dest == "HOU")
+```
+
+    3. Were operated by United, American, or Delta  
+```{r Exercise 5.2.4 1.3}
+filter(flights, carrier %in% c("AA", "UA"))
+filter(flights, carrier == "AA" | carrier == "UA")
+```
+
+    4. Departed in summer (July, August, and September)  
+```{r Exercise 5.2.4 1.4}
+filter(flights, month %in% c(7, 8, 9))
+filter(flights, month == 7 | month == 8 | month == 9)
+```
+
+    5. Arrived more than two hours late, but didn’t leave late  
+```{r Exercise 5.3.4 1.5}
+filter(flights, arr_delay > 120 & dep_delay < 1)
+```
+
+    6. Were delayed by at least an hour, but made up over 30 minutes in flight  
+```{r Exercise 5.2.4 1.6}
+filter(flights, dep_delay >= 60 & arr_delay < -30)
+```
+
+    7. Departed between midnight and 6am (inclusive)
+```{r Exercise 5.2.4 1.7}
+filter(flights, dep_time > 0 & dep_time < 600)
+```
+
+#### 2. Another useful dplyr filtering helper is between(). What does it do? Can you use it to simplify the code needed to answer the previous challenges?
+```{r Exercise 5.2.4 2}
+?between
+
+# 1.5 simplified
+filter(flights, between(flights$month, 7, 9))
+
+# 1.7 simplified
+filter(flights, between(flights$dep_time, 0, 600))
+```
+
+#### 3. How many flights have a missing dep_time? What other variables are missing? What might these rows represent?
+```{r Exercise 5.2.4 3}
+filter(flights, is.na(dep_time))
+# or
+table(is.na(flights$dep_time))
+```
+
+#### 4. Why is NA ^ 0 not missing? Why is NA | TRUE not missing? Why is FALSE & NA not missing? Can you figure out the general rule? (NA * 0 is a tricky counterexample!)
+
+- `NA^0` is not missing because any value to the 0th power is 1  
+- `NA | TRUE` is not missing because the | operand will return `TRUE` as long as one condition is true. `TRUE` is `TRUE`.  
+- FALSE & NA is not missng because the NA is ignored  
+- In operations, any value interacting with an `NA` becomes missing. Missing values are ignored in conditional exressions.  
+
+## `arrange()`
+```{r Arrange}
+arrange(flights, year, month, day)
+```
+```{r Descending order}
+arrange(flights, desc(arr_delay))
+```
+```{r Missing values}
+df <- tibble(x = c(5, 2, NA))
+arrange(df, x)
+arrange(df, desc(x))
+```
+
+### Exercises 5.3.1
+#### 1. How could you use `arrange()` to sort all missing values to the start? (Hint: use `is.na())`.
+```{r Exercise 5.3.1 1}
+# Example using arrival times
+arrange(flights, !is.na(arr_time))
+```
+
+#### 2. Sort `flights` to find the most delayed flights. Find the flights that left earliest.
+```{r Exercise 5.3.1 2}
+# Most delayed at departure
+arrange(flights, desc(dep_delay))
+
+# Left earliest
+arrange(flights, dep_delay)
+```
+
+### 3. Sort `flights` to find the fastest flights
+```{r Exercise 5.3.1 3}
+arrange(flights, desc(distance / air_time))
+```
+
+#### 4. Which flights travelled the longest? Which travelled the shortest?
+```{r Exercise 5.3.1 4}
+# Flights with the longest travel time
+arrange(flights, desc(air_time))
+
+# Flights with the shortest travel time
+arrange(flights, air_time)
+```
+
+## `select()`
+```{r Subsetting with select}
+# Select columns by name
+select(flights, year, month, day)
+
+# Select all columns between year and day (inclusive)
+select(flights, year:day)
+
+# Select all columns except those from year to day
+select(flights, -(year:day))
+```
+
+Helper functions to use with `select()`  
+
+- `starts_with("abc")`: matches names that begin with “abc”.
+- `ends_with("xyz")`: matches names that end with “xyz”.
+- `contains("ijk")`: matches names that contain “ijk”.
+- `matches("(.)\\1")`: selects variables that match a regular expression. This one matches any variables that contain repeated characters. You’ll learn more about regular expressions in strings.
+- `num_range("x", 1:3)`: matches x1, x2 and x3.
+
+### `rename()`
+```{r Rename}
+rename(flights, tail_num = tailnum)
+```
+
+### `everything()`
+```{r Everything}
+# Move handful of variables to the start of the data frame
+select(flights, time_hour, air_time, everything())
+```
+
+### Exercises 5.4.1
+#### 1. Brainstorm as many ways as possible to select `dep_time`, `dep_delay`, `arr_time`, and `arr_delay` from `flights`.
+```{r Exercise 5.4.1 1}
+# select
+select(flights, dep_time, dep_delay, arr_time, arr_delay)
+# starts_with
+select(flights, starts_with("dep_"), starts_with("arr_"))
+# ends_with
+select(flights, ends_with("time"), ends_with("delay"), -(starts_with("sched")), -(starts_with("air")))
+# contains
+select(flights, contains("dep"), contains("arr_"), -(contains("sched")))
+```
+
+#### 2. What happens if you include the name of a variable multiple times in a `select()` call?
+
+The variable is included only once in the data frame
+```{r Exercise 5.4.1 2}
+select(flights, arr_delay, dep_delay, dep_delay)
+```
+
+#### 3. What does the `one_of()` function do? Why might it be helpful in conjunction with this vector?
+
+```
+vars <- c("year", "month", "day", "dep_delay", "arr_delay")
+```
+
+`one_of()` allows one to select variables that match those in a character vector. 
+
+```{r Exercise 5.4.1 3}
+vars <- c("year", "month", "day", "dep_delay", "arr_delay")
+select(flights, one_of(vars))
+```
+
+#### 4. Does the result of running the following code surprise you? How do the select helpers deal with case by default? How can you change that default?
+
+```
+select(flights, contains("TIME"))
+```
+
+The `select()` helpers are not case sensitive by default and will select all variables that contain the character string `time` regardless of case (e.g. "TIME", "Time", time", "TiMe", etc.). To change the default, set `ignore.case = FALSE` within the helper function.
+```{r Exercise 5.4.1 4}
+# Default
+select(flights, contains("TIME"))
+
+# Set ignore.case = FALSE
+select(flights, contains("TIME", ignore.case = FALSE))
+```
+
+## `mutate()`
