@@ -314,3 +314,94 @@ select(flights, contains("TIME", ignore.case = FALSE))
 ```
 
 ## `mutate()`
+```{r Use mutate}
+# Create a narrower dataset
+flights_sml <- select(flights, year:day, ends_with("delay"), distance, air_time)
+
+# Create new columns
+mutate(flights_sml, 
+       gain = arr_delay - dep_delay, 
+       speed = distance / air_time * 60, 
+       hours = air_time / 60, 
+       gain_per_hour = gain / hours)
+```
+### `transmute()`
+
+Only keep the new variables.  
+```{r transmute}
+transmute(flights,
+            gain = arr_delay - dep_delay, 
+            hours = air_time / 60, 
+            gain_per_hour = gain / hours)
+```
+
+## Useful creation functions
+
+1. Modular arithmatic, including:  
+
+    - Division  
+```{r Division}
+100 / 3
+```
+
+    - Integer division  
+```{r Integer division}
+100 %/% 3
+```
+
+    - Remainder division  
+```{r Remainder division}
+100 %% 3
+```
+```{r Breaking up integers}
+# Breaking up is(n't) hard to do
+transmute(flights,
+          dep_time,
+          hour = dep_time %/%100,
+          minute = dep_time %% 100)
+```
+
+2. logs
+3.  Offsets (lead & lag)
+```{r lead and lag}
+(x <-  1:10)
+lag(x)
+lead(x)
+```
+
+4. Cumulative and rolling aggregates  
+    - `cumsum()`  
+    - `cumprod()`  
+    - `cummin()`  
+    - `cummax()`
+    - `cummean()`
+```{r Cumulative}
+x
+cumsum(x)
+cummean(x)
+```
+
+5. Logical comparisons
+6. Ranking
+```{r Ranking}
+(y <- c(1, 2, 2, NA, 3, 4))
+min_rank(y) # Default: smallest values get small ranks
+min_rank(desc(y)) # Give the largest values the smallest ranks
+row_number(y)
+dense_rank(y)
+percent_rank(y)
+cume_dist(y)
+```
+
+### Exercises 5.5.2
+#### 1. Currently dep_time and sched_dep_time are convenient to look at, but hard to compute with because they’re not really continuous numbers. Convert them to a more convenient representation of number of minutes since midnight.
+
+#### 2. Compare air_time with arr_time - dep_time. What do you expect to see? What do you see? What do you need to do to fix it?
+
+#### 3. Compare dep_time, sched_dep_time, and dep_delay. How would you expect those three numbers to be related?
+
+#### 4. Find the 10 most delayed flights using a ranking function. How do you want to handle ties? Carefully read the documentation for min_rank().
+
+#### 5. What does 1:3 + 1:10 return? Why?
+
+#### 6. What trigonometric functions does R provide?
