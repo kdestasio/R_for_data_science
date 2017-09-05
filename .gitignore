@@ -1,7 +1,7 @@
 #gitignore for the R_practice repository
 
 #Directories
-Figs/
 
 #Files
 .DS_Store
+.Rproj.user
