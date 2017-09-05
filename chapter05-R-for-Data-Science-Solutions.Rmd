@@ -1,15 +1,16 @@
 ---
-title: "Solutions to G. Grolemund & H. Wickhams’s [R for Data Science](http://r4ds.had.co.nz/index.html), Chapter 5"
+title: Solutions to G. Grolemund & H. Wickhams’s [R for Data Science](http://r4ds.had.co.nz/index.html),
+  Chapter 5
 author: "Krista DeStasio"
 date: "8/2/2017"
 output:
-  pdf_document:
-    toc: yes
-    toc_depth: '4'
   html_document:
     toc: yes
     toc_depth: 4
     toc_float: yes
+  pdf_document:
+    toc: yes
+    toc_depth: '4'
 ---
 
 
@@ -393,9 +394,48 @@ cume_dist(y)
 ```
 
 ### Exercises 5.5.2
-#### 1. Currently dep_time and sched_dep_time are convenient to look at, but hard to compute with because they’re not really continuous numbers. Convert them to a more convenient representation of number of minutes since midnight.
+#### 1. Currently `dep_time` and `sched_dep_time` are convenient to look at, but hard to compute with because they’re not really continuous numbers. Convert them to a more convenient representation of number of minutes since midnight.
+```{r Exercise 5.5.2 1.1}
+transmute(flights, 
+          dep_time,
+          dep_minutes = dep_time %/% 100 * 60 + dep_time %% 100,
+          sched_dep_time,
+          sched_dep_minutes = sched_dep_time %/% 100 * 60 + sched_dep_time %% 100)
+```
 
-#### 2. Compare air_time with arr_time - dep_time. What do you expect to see? What do you see? What do you need to do to fix it?
+Alternatively, write a function to convert time to minutes as seen here: https://jrnold.github.io/e4qf/data-transformation.html#mutate
+```{r Exerceise 5.2.2 1.2}
+time2mins <- function(x) {
+  x %/% 100 * 60 + x %% 100
+}
+
+transmute(flights,
+       dep_minutes = time2mins(dep_time),
+       sched_dep_minutes = time2mins(sched_dep_time))
+```
+
+#### 2. Compare `air_time` with `arr_time` - `dep_time`. What do you expect to see? What do you see? What do you need to do to fix it?
+
+What we want is for `air_time` to equal `arr_time` - `dep_time`. However, since the times are not continuous values, we will get a meaningless value. We must first convert `arr_time` and `dep_time` to a format such as minuted that represents the elapsed time on a continuous scale.
+However, since the plane may depart from and arrive in different time zones, and since arrival and departure times are reported in local time, some of the calculated values will be different than the `air_time` values. 
+```{r Excercise 5.5.2 2.1}
+# Without converting to minutes, note that the columns do not match
+transmute(flights,
+          air_time,
+          calculated_airtime = arr_time - dep_time)
+
+# Now that we have converted the time format, the calculation will be correct. But wait, some still don't match!
+(flights2 <- transmute(flights, 
+          arr_time = time2mins(arr_time),
+          dep_time = time2mins(dep_time),
+          air_time,
+          airtime_new = arr_time - dep_time))
+```
+
+To fix this, let's simply view those flights that did not change time zones.
+```{r Exercises 5.2.2 2.2}
+flights2 %>% filter(air_time == airtime_new)
+```
 
 #### 3. Compare dep_time, sched_dep_time, and dep_delay. How would you expect those three numbers to be related?
 
