@@ -1,0 +1,42 @@
+---
+title: "Solutions to G. Grolemund & H. Wickhams’s [R for Data Science](http://r4ds.had.co.nz/index.html), Chapter 7"
+author: "Krista DeStasio"
+date: "9/3/2017"
+output:
+  pdf_document:
+    toc: yes
+    toc_depth: '4'
+  html_document:
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
+---
+
+# A Brief Introduction to This File
+This R file walks through G. Grolemund & H. Wickhams’s online text, ["R for Data Science."](http://r4ds.had.co.nz/index.html) Much of the code is sourced directly from the book and credit belongs to the authors. Here, some sections of code are heavily commented so that the beginning R programmer can read through and understand what each line of code does and compare it to their own as they work through the text. Throughout, the book provides the primary and most thorough explanation. **For the greatest learning benefit, I suggest you attempt each exercise on your own before looking at the code or write-ups provided here.** Of course, there is more than one way to write code and you may find a more elegant solution that you prefer.   
+
+For those new to R and RStudio, it may be of additional benefit to knit the document and examine how the code in the Rmd file is visually expressed in the resultant knitted document. For example, see how the ` ["R for Data Science."](http://r4ds.had.co.nz/index.html)` is expressed as a hyperlink in the preceeding paragraph where it was not surrounded by tick-marks and compare that to how the same text is expressed in this paragraph when surrounded by ticks. See also the difference in appearance when knitting to different document types (HTML, PDF, Word).  
+
+**Tip**: *If you are using RStudio, click the text next to the orange # box at the bottom of the editor window to easily navigate the code chunks.*  
+
+**Tip**: *Use the `?` before any command to view the documentation on that function. Do this often. For example, type `?setwd` to see a description, usage, arguments, and more for the function `setwd()`.*  
+
+**Tip**: Find RStudio Cheatsheets at [https://www.rstudio.com/resources/cheatsheets/](https://www.rstudio.com/resources/cheatsheets/)
+```{r Setup, include=FALSE}
+rm(list=ls()) # Clear the workspace
+setwd("~/Dropbox/code/R/R_for_data_science/") # Set the working directory
+
+## Install and load required packages
+list.of.packages <- c("knitr", "tidyverse") # Make a character vector of packages used in the script
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])] # Which packages are not already installed
+if(length(new.packages)) install.packages(new.packages) 
+lapply(list.of.packages, library, character.only = TRUE) # If the list of packages we want and the list of new packages is not of the same length, install the packages listed in new.packages
+
+knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='Figs_ch07/', echo=TRUE, warning=FALSE, message=FALSE) # Set the knit options: save figures to a folder, echo code chunks in the knitted document, don't print warnings in the knitted doc, don't print messages in the knitted doc.
+```
+
+# Chapter 7
+
+```{r}
+
+```
